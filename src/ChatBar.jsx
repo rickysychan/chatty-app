@@ -19,8 +19,7 @@ class ChatBar extends React.Component {
     }
 
     handleNameChange(event) {
-        this.setState({username: event.target.value});
-        this.props.onUsernameChange(this.state.username);
+        this.props.onUsernameChange(event.target.value);
     }
 
 
