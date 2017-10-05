@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 
+let nextId = 3;
+
 class ChatBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentUsername: 'Ricky',
+            currentUsername: 'Annonymous',
             content: '',
             systemMessage: '',
-            oldUsername: ''
+            oldUsername: 'Annonymous'
         }
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -22,29 +24,28 @@ class ChatBar extends React.Component {
     }
 
     handleNameChange(event) {
-        this.props.onUsernameChange(event.target.value);
+        // this.props.onUsernameChange(event.target.value);
         this.setState({currentUsername: event.target.value})
     }
 
-
-    // this fires every key press on the message text box.
-    handleKeyPress(target){
-        // if the key is the enter key
-        if(target.charCode==13){
-            // call our onMessageSend prop passing the current content
-            // This function is defined in App.jsx
-            this.props.onMessageSend(this.state.content);
-            // Clear our content to give us a fresh state to start from for our next message.
-            this.setState({content: '', username: this.state.username});
+    handleNameKeyPress(target){
+        if(target.charCode===13){
+            let NewSysMessage = ( this.state.oldUsername + ' has changed their name to ' + this.state.currentUsername)
+            console.log(NewSysMessage)
+            this.setState({systemMessage: NewSysMessage})
         }
     }
 
-    handleNameKeyPress(target){
-        if(target.charCode==13){
-            let systemMsg = this.state.oldUsername + ' has changed their name to ' + this.state.currentUsername
-            this.setState({systemMessage: systemMsg});
-            console.log('from chatbar >>>', this.state.systemMessage)
-            this.props.onNameNotification(this.state.systemMessage);
+    handleKeyPress(event){
+        if(event.charCode===13){
+            this.setState({oldUsername: this.state.currentUsername})
+            let dataObject = {}
+            dataObject['currentUsername'] = this.state.currentUsername,
+            dataObject['content'] = this.state.content,
+            dataObject['id'] = nextId++
+            dataObject['sysMsg'] = this.state.systemMessage
+            this.props.onMessageSend(dataObject);
+            this.setState({content: ''});
         }
     }
 
@@ -56,6 +57,7 @@ class ChatBar extends React.Component {
                 className="chatbar-username" 
                 placeholder="Your Name (Optional)" 
                 onKeyPress={this.handleNameKeyPress}
+                value={this.state.currentUsername}
                 onChange={this.handleNameChange}/>
             <input id="chatMessage"  
                 className="chatbar-message" 

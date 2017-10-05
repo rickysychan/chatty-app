@@ -10,30 +10,18 @@ class App extends Component {
     // pass the props to React.Component (i.e. the parent class of this component)
     super(props);
       this.state = {
-        currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
         messages: [], // messages coming from the server will be stored here as they arrives
-        systemMessage: ''
       }
       this.appSocket = new WebSocket("ws://localhost:3001/") 
-    }
-
-    onUsernameChange(newName) {
-      this.state.currentUser.name = newName
     }
 
     onMessageSend(content) {
       
       console.log('Sending message with content:', content)
-      let newMessage = {id: nextId++, username: this.state.currentUser.name, content: content, type: 'postMessage', systemMessage: this.state.systemMessage };
+      let newMessage = content
       const messages = this.state.messages.concat(newMessage)
       this.setState({messages: messages})
-      console.log('Sending >>>', this.state.messages);
       this.appSocket.send(JSON.stringify(newMessage));
-    }
-
-    onNameNotification(notification){
-      console.log('from app >>>', notification);
-      this.state.systemMessage = notification;
     }
 
     componentDidMount() {
@@ -56,12 +44,7 @@ class App extends Component {
         </nav>
         <MessageList messages={this.state.messages}/>
         <ChatBar currentUser={this.state.currentUser}
-          onMessageSend={this.onMessageSend.bind(this)}
-          onUsernameChange={this.onUsernameChange.bind(this)}
-          onNameNotification={this.onNameNotification.bind(this)}/>
-          <div className="message system">
-      Anonymous1 changed their name to nomnom.
-          </div>
+                 onMessageSend={this.onMessageSend.bind(this)}/>
       </div>
 
     )

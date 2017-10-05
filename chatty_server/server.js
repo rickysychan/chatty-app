@@ -32,7 +32,7 @@ wss.on('connection', (ws) => {
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(stringifyedMessage);
-        // console.log('broadcasted! %s', stringifyedMessage)
+        console.log('broadcasted! %s', stringifyedMessage)
       }
     });
   });
