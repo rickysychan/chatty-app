@@ -11,7 +11,8 @@ class App extends Component {
     super(props);
       this.state = {
         currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
-        messages: [] // messages coming from the server will be stored here as they arrives
+        messages: [], // messages coming from the server will be stored here as they arrives
+        systemMessage: ''
       }
       this.appSocket = new WebSocket("ws://localhost:3001/") 
     }
@@ -23,30 +24,25 @@ class App extends Component {
     onMessageSend(content) {
       
       console.log('Sending message with content:', content)
-      let newMessage = {id: nextId++, username: this.state.currentUser.name, content: content};
+      let newMessage = {id: nextId++, username: this.state.currentUser.name, content: content, type: 'postMessage', systemMessage: this.state.systemMessage };
       const messages = this.state.messages.concat(newMessage)
-      console.log(this.state.messages);
       this.setState({messages: messages})
+      console.log('Sending >>>', this.state.messages);
       this.appSocket.send(JSON.stringify(newMessage));
     }
 
+    onNameNotification(notification){
+      console.log('from app >>>', notification);
+      this.state.systemMessage = notification;
+    }
+
     componentDidMount() {
-      // console.log("componentDidMount <App />");
-      // console.log("componentDidMount <App />");
-      // setTimeout(() => {
-      //   console.log("Simulating incoming message");
-      //   // Add a new message to the list of messages in the data store
-      //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      //   const messages = this.state.messages.concat(newMessage)
-      //   // Update the state of the app component.
-      //   // Calling setState will trigger a call to render() in App and all child components.
-      //   this.setState({messages: messages})
-      // }, 3000);
       this.appSocket = new WebSocket("ws://localhost:3001");
       this.appSocket.onmessage = (event) => {
-        console.log('Client has recieved broadcast', event);
+        // console.log('Client has recieved broadcast', event);
         // code to handle incoming message
         let parsedEvent = JSON.parse(event.data)
+        // when recieving data from server you need to use .data for some reason
         const messages = this.state.messages.concat(parsedEvent)
         this.setState({messages: messages})  
       }
@@ -61,7 +57,11 @@ class App extends Component {
         <MessageList messages={this.state.messages}/>
         <ChatBar currentUser={this.state.currentUser}
           onMessageSend={this.onMessageSend.bind(this)}
-          onUsernameChange={this.onUsernameChange.bind(this)}/>
+          onUsernameChange={this.onUsernameChange.bind(this)}
+          onNameNotification={this.onNameNotification.bind(this)}/>
+          <div className="message system">
+      Anonymous1 changed their name to nomnom.
+          </div>
       </div>
 
     )

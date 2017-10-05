@@ -4,12 +4,15 @@ class ChatBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
-            content: ''
+            currentUsername: 'Ricky',
+            content: '',
+            systemMessage: '',
+            oldUsername: ''
         }
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleNameKeyPress = this.handleNameKeyPress.bind(this);
       }
 
     // This fires when the chat bar message text box value changes
@@ -20,6 +23,7 @@ class ChatBar extends React.Component {
 
     handleNameChange(event) {
         this.props.onUsernameChange(event.target.value);
+        this.setState({currentUsername: event.target.value})
     }
 
 
@@ -31,7 +35,16 @@ class ChatBar extends React.Component {
             // This function is defined in App.jsx
             this.props.onMessageSend(this.state.content);
             // Clear our content to give us a fresh state to start from for our next message.
-            this.setState({content: ''});
+            this.setState({content: '', username: this.state.username});
+        }
+    }
+
+    handleNameKeyPress(target){
+        if(target.charCode==13){
+            let systemMsg = this.state.oldUsername + ' has changed their name to ' + this.state.currentUsername
+            this.setState({systemMessage: systemMsg});
+            console.log('from chatbar >>>', this.state.systemMessage)
+            this.props.onNameNotification(this.state.systemMessage);
         }
     }
 
@@ -42,6 +55,7 @@ class ChatBar extends React.Component {
             <input id="chatUsername"  
                 className="chatbar-username" 
                 placeholder="Your Name (Optional)" 
+                onKeyPress={this.handleNameKeyPress}
                 onChange={this.handleNameChange}/>
             <input id="chatMessage"  
                 className="chatbar-message" 

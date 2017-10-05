@@ -26,12 +26,13 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {
     let parsedMessage = JSON.parse(message)
     parsedMessage['Uid'] = uuidv4();
-    // console.log('received: %s', JSON.stringify(parsedMessage));
+    parsedMessage['type'] = 'incomingMessage';
+    console.log('received: %s', JSON.stringify(parsedMessage));
     stringifyedMessage = JSON.stringify(parsedMessage)
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(stringifyedMessage);
-        console.log('broadcasted! %s', stringifyedMessage)
+        // console.log('broadcasted! %s', stringifyedMessage)
       }
     });
   });
