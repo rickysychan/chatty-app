@@ -13,6 +13,7 @@ class App extends Component {
         currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
         messages: [] // messages coming from the server will be stored here as they arrives
       }
+      this.appSocket = new WebSocket("ws://localhost:3001/") 
     }
 
     onUsernameChange(newName) {
@@ -29,7 +30,6 @@ class App extends Component {
       this.appSocket.send(JSON.stringify(newMessage));
     }
 
-
     componentDidMount() {
       // console.log("componentDidMount <App />");
       // console.log("componentDidMount <App />");
@@ -43,6 +43,13 @@ class App extends Component {
       //   this.setState({messages: messages})
       // }, 3000);
       this.appSocket = new WebSocket("ws://localhost:3001");
+      this.appSocket.onmessage = (event) => {
+        console.log('Client has recieved broadcast', event);
+        // code to handle incoming message
+        let parsedEvent = JSON.parse(event.data)
+        const messages = this.state.messages.concat(parsedEvent)
+        this.setState({messages: messages})  
+      }
     }
 
   render() {
