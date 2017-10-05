@@ -7,6 +7,7 @@ class ChatBar extends React.Component {
             username: '',
             content: ''
         }
+        this.handleNameChange = this.handleNameChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
       }
@@ -16,6 +17,12 @@ class ChatBar extends React.Component {
         // Use setState to change our state to equal the content of the text box
         this.setState({content: event.target.value});
     }
+
+    handleNameChange(event) {
+        this.setState({username: event.target.value});
+        this.props.onUsernameChange(this.state.username);
+    }
+
 
     // this fires every key press on the message text box.
     handleKeyPress(target){
@@ -28,9 +35,6 @@ class ChatBar extends React.Component {
             this.setState({content: ''});
         }
     }
-    // onUsernameChange{
-
-    // }
 
     render() {
       return (
@@ -39,7 +43,7 @@ class ChatBar extends React.Component {
             <input id="chatUsername"  
                 className="chatbar-username" 
                 placeholder="Your Name (Optional)" 
-                defaultValue={this.props.currentUser.name || 'Annoymous'} />
+                onChange={this.handleNameChange}/>
             <input id="chatMessage"  
                 className="chatbar-message" 
                 onKeyPress={this.handleKeyPress} 
