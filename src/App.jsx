@@ -20,36 +20,51 @@ class App extends Component {
     }
 
 
-    onMessageSend(content) {
-      const recievedMessageData = this.state.messageData.concat(content)
-      this.setState({messageData: recievedMessageData})
-      this.appSocket.send(JSON.stringify(content));
+    onMessageSend(messageDataObject) {
+      this.setState({messageData: this.state.messageData.concat(messageDataObject)}, () => {
+        console.log('messageData >>>', this.state.messageData);
+        this.appSocket.send(JSON.stringify(this.state.messageData));
+      })
     }
 
 // receives messageData and sets the messageData state and than sends the content to server
-
-    onNameChangeSend(content) {
-      const systemMessages = this.state.systemMessage.concat(content)
-      this.setState({systemMessages: systemMessages})
-      this.appSocket.send(JSON.stringify(content));
+    onNameChangeSend(newNameDataObject) {
+      this.setState({systemMessage: this.state.systemMessage.concat(newNameDataObject)}, () => {     
+        console.log("systemMessage >>>",  this.state.systemMessage) 
+        this.appSocket.send(JSON.stringify(this.state.systemMessage));} )
     }
 
     // receives name change notification data and sets the systemMessage state and than sends the content to server
 
     componentDidMount() {
+
       this.appSocket.onmessage = (event) => {
-        // console.log('parsed data >>>', event.data)
         let parsedEventData = JSON.parse(event.data)
-        this.setState({userCount: parsedEventData.userCount})
+
+        switch (parsedEventData.type) {
+          case "userCount":
+            this.setState({userCount: parsedEventData.userCount})
+            break;
+
+          case "incommingMessage":
+            // parse incomming message and add to list of messages
+            break;
+
+          case "incommingNotification":
+            // parse incomming notification
+            break;
+
+          default:
+            break;
+        }
+        
         console.log('UserCount >>>>', this.state.userCount)
         // console.log('Client has recieved broadcast', event);
         // code to handle incoming message
         let parsedEvent = JSON.parse(event.data)
         // when recieving data from server you need to use .data for some reason
         const recievedMessageData = this.state.messageData.concat(parsedEvent)
-        this.setState({userCount: event.data.userCount})
         this.setState({messageData: recievedMessageData}) 
-        // this.setState({UserCountData: recievedMessageData[0]})
          
       }
     }
