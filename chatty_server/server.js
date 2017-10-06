@@ -23,6 +23,19 @@ const WebSocket = require('ws');
 
 wss.on('connection', (ws) => {
 
+  ws.on('systemMessage', function incoming(systemMessage) {
+    let parsedMessage = JSON.parse(systemMessage)
+    parsedMessage['type'] = 'incomingNotification';
+    console.log('received: %s', JSON.stringify(parsedMessage));
+    stringifyedMessage = JSON.stringify(parsedMessage)
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(stringifyedMessage);
+        console.log('broadcasted! %s', stringifyedMessage)
+      }
+    });
+  });
+
   ws.on('message', function incoming(message) {
     let parsedMessage = JSON.parse(message)
     parsedMessage['Uid'] = uuidv4();

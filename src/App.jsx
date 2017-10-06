@@ -10,18 +10,26 @@ class App extends Component {
     // pass the props to React.Component (i.e. the parent class of this component)
     super(props);
       this.state = {
-        messages: [], // messages coming from the server will be stored here as they arrives
+        messages: [],
+        systemMessage: [], // messages coming from the server will be stored here as they arrives
       }
       this.appSocket = new WebSocket("ws://localhost:3001/") 
     }
 
+
     onMessageSend(content) {
       
       console.log('Sending message with content:', content)
-      let newMessage = content
-      const messages = this.state.messages.concat(newMessage)
+      const messages = this.state.messages.concat(content)
       this.setState({messages: messages})
-      this.appSocket.send(JSON.stringify(newMessage));
+      this.appSocket.send(JSON.stringify(content));
+    }
+
+    onNameChangeSend(content) {
+      console.log('Sending message with content:', content)
+      const systemMessages = this.state.systemMessage.concat(content)
+      this.setState({systemMessages: systemMessages})
+      this.appSocket.send(JSON.stringify(content));
     }
 
     componentDidMount() {
@@ -44,7 +52,8 @@ class App extends Component {
         </nav>
         <MessageList messages={this.state.messages}/>
         <ChatBar currentUser={this.state.currentUser}
-                 onMessageSend={this.onMessageSend.bind(this)}/>
+                 onMessageSend={this.onMessageSend.bind(this)}
+                 onNameChangeSend={this.onNameChangeSend.bind(this)}/>
       </div>
 
     )

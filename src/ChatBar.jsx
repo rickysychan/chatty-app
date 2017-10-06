@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-let nextId = 3;
-
 class ChatBar extends React.Component {
     constructor(props) {
         super(props);
@@ -24,29 +22,35 @@ class ChatBar extends React.Component {
     }
 
     handleNameChange(event) {
-        // this.props.onUsernameChange(event.target.value);
-        this.setState({currentUsername: event.target.value})
+        let newSysMessage = ( this.state.oldUsername + ' has changed their name to ' + event.target.value)
+        this.setState({currentUsername: event.target.value, systemMessage: newSysMessage})
     }
 
-    handleNameKeyPress(target){
-        if(target.charCode===13){
-            let NewSysMessage = ( this.state.oldUsername + ' has changed their name to ' + this.state.currentUsername)
-            console.log(NewSysMessage)
-            this.setState({systemMessage: NewSysMessage})
-        }
-    }
 
     handleKeyPress(event){
         if(event.charCode===13){
             this.setState({oldUsername: this.state.currentUsername})
-            let dataObject = {}
-            dataObject['currentUsername'] = this.state.currentUsername,
-            dataObject['content'] = this.state.content,
-            dataObject['id'] = nextId++
-            dataObject['sysMsg'] = this.state.systemMessage
+            let dataObject = {
+                'currentUsername' : this.state.currentUsername,
+                'content'         : this.state.content,
+                'type'            : 'postMessage',
+                'sysMsg'         : this.state.systemMessage,
+            }
             this.props.onMessageSend(dataObject);
             this.setState({content: ''});
         }
+    }
+
+    handleNameKeyPress(event) {
+      if(event.charCode===13){
+        this.setState({oldUsername: this.state.currentUsername})  
+        let dataObject = {
+            'type'      : 'postNotification',
+            'content'   : this.state.systemMessage,
+        }
+        this.props.onNameChangeSend(dataObject);
+        this.setState({systemMessage: ''});
+      }
     }
 
     render() {
