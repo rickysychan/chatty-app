@@ -22,7 +22,6 @@ const WebSocket = require('ws');
 wss.on('connection', (ws) => {
 
   let userCount = wss.clients.size
-  console.log('connected number>>>', userCount)
   let msg = JSON.stringify({type: 'userCount', userCount});
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
@@ -31,15 +30,17 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('message', function incoming(message) {
-
+    // stringifyedMessage = JSON.stringify(parsedMessage)
     let parsedMessage = JSON.parse(message)
-    parsedMessage['Uid'] = uuidv4();
-    parsedMessage['userCount'] = userCount;
-    console.log('received: %s',(parsedMessage[0].type));
-    stringifyedMessage = JSON.stringify(parsedMessage)
     
-      switch(parsedMessage[0].type) {
+    console.log('received type: %s', parsedMessage.type);
+
+      switch(parsedMessage.type) {
         case "postMessage":
+          let parsedMessage1 = parsedMessage
+          parsedMessage1['Uid'] = uuidv4();
+          parsedMessage1['type'] = 'incommingMessage'
+          let stringifyedMessage = JSON.stringify(parsedMessage1)
           console.log('broadcasted! %s', stringifyedMessage)
           wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -47,19 +48,27 @@ wss.on('connection', (ws) => {
             }
           });
           break;
+
         case "postNotification":
-            console.log('broadcasted! %s', stringifyedMessage)
+            let postnotificaitonParsed = parsedMessage
+            postnotificaitonParsed['type'] = 'incommingNotification'
+            let postNotificationString = JSON.stringify(postnotificaitonParsed)
+            console.log('broadcasted! %s', postNotificationString)
               wss.clients.forEach(function each(client) {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
-                  client.send(stringifyedMessage);
+                  client.send(postNotificationString);
                 }
               });
           break;
+
+        case "userCount":
+          break;
         default:
           // show an error in the console if the message type is unknown
-          throw new Error("Unknown event type " + parsedMessage[0].type);
+          console.log(parsedMessage);
+          throw new Error("Unknown event type " + parsedMessage.type);
       }
   });
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => userCount--);
+  ws.on('close', () => {console.log("user disconnected")});
 });
