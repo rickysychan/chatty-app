@@ -26,6 +26,7 @@ class ChatBar extends React.Component {
         this.setState({currentUsername: event.target.value, systemMessage: newSysMessage})
     }
 
+    // this sets the currentUser everytime input changes and creates the system message based on it
 
     handleKeyPress(event){
         if(event.charCode===13){
@@ -41,6 +42,8 @@ class ChatBar extends React.Component {
         }
     }
 
+    // this makes it so when enter key is pressed messageData is sent to app
+
     handleNameKeyPress(event) {
       if(event.charCode===13){
         this.setState({oldUsername: this.state.currentUsername})  
@@ -52,6 +55,8 @@ class ChatBar extends React.Component {
         this.setState({systemMessage: ''});
       }
     }
+
+    // this makes it so that when enter key is pressed systemMessage data is sent to app
 
     render() {
       return (

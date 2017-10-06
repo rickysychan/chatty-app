@@ -7,11 +7,11 @@ class MessageList extends React.Component {
         return (<div>
                 <main className="messages">   
                 <div className="message system">    
-                    {/* Anonymous1 changed their name to nomnom. */}
                 </div>
-                {this.props.messages.map((message, index) =>
+                {this.props.messageData.map((message, index) =>
                     <Message key={index} username={message.currentUsername} content={message.content} systemMessage={message.sysMsg}/>
                 )}
+
                 </main>
                 </div>
 
