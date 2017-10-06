@@ -22,7 +22,7 @@ class App extends Component {
 
     onMessageSend(messageDataObject) {
       this.setState({messageData: this.state.messageData.concat(messageDataObject)}, () => {
-        console.log('messageData >>>', this.state.messageData);
+        // console.log('messageData >>>', this.state.messageData);
         this.appSocket.send(JSON.stringify(messageDataObject));
       });
     }
@@ -30,7 +30,7 @@ class App extends Component {
 // receives messageData and sets the messageData state and than sends the content to server
     onNameChangeSend(newNameDataObject) {
       this.setState({systemMessage: this.state.systemMessage.concat(newNameDataObject)}, () => {     
-        console.log("systemMessage >>>",  this.state.systemMessage) 
+        // console.log("systemMessage >>>",  this.state.systemMessage) 
         this.appSocket.send(JSON.stringify(newNameDataObject));
       });
     }
@@ -41,22 +41,12 @@ class App extends Component {
 
       this.appSocket.onmessage = (event) => {
         let parsedEventData = JSON.parse(event.data)
-        console.log(parsedEventData)
-        //this.setState({userCount: parsedEventData.userCount})
-        //console.log('content >>>>', event)
-        // let parsedEventData = JSON.parse(event.data)
-
-        // switch(parsedEventData.type) {
-        //   case 'incommingMessage';
-        // }
+        // console.log(parsedEventData)
 
 
         if(parsedEventData.type === 'userCount' ){
           this.setState({userCount: parsedEventData.userCount})
         } else {
-        // console.log('Client has recieved broadcast', event);
-        // code to handle incoming message
-        // when recieving data from server you need to use .data for some reason
         const recievedMessageData = this.state.messageData.concat(parsedEventData)
         this.setState({messageData: recievedMessageData}) 
         }

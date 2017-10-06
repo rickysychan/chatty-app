@@ -39,6 +39,7 @@ class ChatBar extends React.Component {
             }
             this.props.onMessageSend(dataObject);
             this.setState({content: ''});
+            this.setState({systemMessage: ''});
         }
     }
 

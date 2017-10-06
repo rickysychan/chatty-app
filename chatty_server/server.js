@@ -30,10 +30,9 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('message', function incoming(message) {
-    // stringifyedMessage = JSON.stringify(parsedMessage)
     let parsedMessage = JSON.parse(message)
     
-    console.log('received type: %s', parsedMessage.type);
+    // console.log('received type: %s', parsedMessage.type);
 
       switch(parsedMessage.type) {
         case "postMessage":
@@ -41,7 +40,7 @@ wss.on('connection', (ws) => {
           parsedMessage1['Uid'] = uuidv4();
           parsedMessage1['type'] = 'incommingMessage'
           let stringifyedMessage = JSON.stringify(parsedMessage1)
-          console.log('broadcasted! %s', stringifyedMessage)
+          // console.log('broadcasted! %s', stringifyedMessage)
           wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
               client.send(stringifyedMessage);
@@ -53,7 +52,7 @@ wss.on('connection', (ws) => {
             let postnotificaitonParsed = parsedMessage
             postnotificaitonParsed['type'] = 'incommingNotification'
             let postNotificationString = JSON.stringify(postnotificaitonParsed)
-            console.log('broadcasted! %s', postNotificationString)
+            // console.log('broadcasted! %s', postNotificationString)
               wss.clients.forEach(function each(client) {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
                   client.send(postNotificationString);
@@ -65,7 +64,7 @@ wss.on('connection', (ws) => {
           break;
         default:
           // show an error in the console if the message type is unknown
-          console.log(parsedMessage);
+          // console.log(parsedMessage);
           throw new Error("Unknown event type " + parsedMessage.type);
       }
   });
