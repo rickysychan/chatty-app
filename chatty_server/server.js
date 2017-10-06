@@ -20,19 +20,16 @@ const WebSocket = require('ws');
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
-var userCount = 0;
 
 wss.on('connection', (ws) => {
-  userCount++;
+  let userCount = wss.clients.size
 
-  let userNumber = userCount/2
-
-  console.log(userNumber)
+  console.log('UserNumber>>>>>', userCount),
   ws.on('message', function incoming(message) {
     let parsedMessage = JSON.parse(message)
     parsedMessage['Uid'] = uuidv4();
     parsedMessage['type'] = 'incomingMessage';
-    parsedMessage['userCount'] = userNumber;
+    parsedMessage['userCount'] = userCount;
     console.log('received: %s', JSON.stringify(parsedMessage));
     stringifyedMessage = JSON.stringify(parsedMessage)
     wss.clients.forEach(function each(client) {
@@ -45,3 +42,6 @@ wss.on('connection', (ws) => {
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => userCount--);
 });
+
+
+// this handles all incoming data adds extra data to it and sends it back to app on every client.
