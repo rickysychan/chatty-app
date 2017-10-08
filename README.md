@@ -4,7 +4,7 @@ ChattyApp is a full stack web application built with node, express, ReactJS that
 
 ## Final product
 
-![What the app looks like](https://github.com/rizelmine17/tweeter/blob/master/docs/Home-page.png)
+![What the app looks like](https://github.com/rickysychan/chatty-app/blob/master/docs/ChattApp_chatScreen.png)
 
 
 ## Dependencies
