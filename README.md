@@ -27,5 +27,5 @@ ChattyApp is a full stack web application built with node, express, ReactJS that
 
 ## Getting started
 
-- Install all dependencies (using the 'npm install' command)
+- Install all dependencies (using the 'npm install' command on root directory and in the chattyapp_server file)
 - Run the developement web-server using the 'node server' command in both the root directory and in the chatty_server
