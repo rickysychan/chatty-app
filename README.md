@@ -1,6 +1,6 @@
 # ChattyApp Project
 
-ChattyApp is a full stack web application built with node, express, ReactJS that allows users to send real time messages and store them on a database. Messages appear and updates in real time user WebSocket IO.
+ChattyApp is a full stack web application built with ReactJS that allows users to send real time messages and store them on a database. Messages appear and updates in real time user WebSocket IO.
 
 ## Final product
 
